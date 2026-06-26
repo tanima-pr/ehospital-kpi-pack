@@ -1,27 +1,18 @@
-# eHospital KPI Pack (MySQL)
+## What this project is
 
-This repo contains a set of MySQL KPI queries and curated views for an eHospital dataset.
+A Proof of Concept analytics workspace for hospital operations, built to 
+demonstrate how AI-assisted natural-language querying can make clinical and 
+billing data accessible without SQL knowledge.
 
-## Folder structure
-- `queries/`
-  - `00_create_curated_views.sql` → creates curated views used by KPIs
-  - `99_quality_checks.sql` → sanity checks / data quality checks
-  - `weekly_appointment_volume.sql`
-  - `weekly_cancellation_rate.sql`
-  - `weekly_blood_tests_volume.sql`
-  - `weekly_revenue_trend.sql`
-  - `billing_status_breakdown.sql`
-  - `billing_by_insurance_type.sql`
-  - `top_doctors_completed_appointments.sql`
-  - `top_blood_tests.sql`
-- `RUNBOOK.md` → step-by-step run order
+This repo contains the data layer: curated MySQL views and KPI queries covering 
+appointment volume, cancellation rates, revenue trends, billing breakdowns, 
+and provider performance. The SQL layer feeds structured data to an AI query 
+interface, enabling non-technical stakeholders to ask questions in plain English 
+and receive data-backed answers.
 
-## How to run (MySQL Workbench)
-1. Open MySQL Workbench and select schema `DEV01`
-2. Run `queries/00_create_curated_views.sql`
-3. Run any KPI query from `queries/` (one file at a time)
-4. Run `queries/99_quality_checks.sql` to validate data sanity
+**Business problem solved:** Hospital operations teams couldn't easily query 
+performance data without engineering support. This workspace made KPI data 
+self-serve and repeatable.
 
-## Notes
-- Views are created using `CREATE OR REPLACE VIEW`
-- KPIs are written to be readable and reusable
+**Tech stack:** MySQL, SQL views, KPI query library
+**AI layer:** Natural-language interface over structured views
