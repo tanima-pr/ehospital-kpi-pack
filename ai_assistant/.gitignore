@@ -1,0 +1,20 @@
+# Secret API key - NEVER commit
+.env
+.streamlit/secrets.toml
+
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local synthetic database (regenerate with setup_db.py)
+ehospital_dw.db
+ehospital_dw.db-journal
+
+# Local audit log
+queries.log
+
+# macOS clutter
+.DS_Store
