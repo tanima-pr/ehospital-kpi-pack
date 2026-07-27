@@ -1,0 +1,18 @@
+# Python virtual environment
+venv/
+
+# DuckDB database file (rebuilt by dbt seed + run)
+*.duckdb
+*.duckdb.wal
+
+# dbt build artifacts
+target/
+dbt_packages/
+logs/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# macOS clutter
+.DS_Store

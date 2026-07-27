@@ -1,0 +1,14 @@
+# profiles.yml — tells dbt WHICH database to connect to.
+# We use DuckDB: a fast analytical database that lives in a single local file
+# (ehospital.duckdb). No server, no cloud account, no login. Perfect for learning.
+#
+# dbt normally looks for this file in ~/.dbt/, but keeping it in the project and
+# running with  --profiles-dir .  keeps everything in one folder.
+
+ehospital:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ehospital.duckdb
+      threads: 4

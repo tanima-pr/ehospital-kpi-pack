@@ -1,0 +1,27 @@
+name: 'ehospital'
+version: '1.0.0'
+config-version: 2
+
+# which profile (connection) to use — defined in profiles.yml
+profile: 'ehospital'
+
+# where dbt looks for each kind of file
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# HOW each layer is built:
+#   staging  -> views  (light cleaning, cheap, always fresh)
+#   marts    -> tables (the KPI outputs analysts/BI read from)
+models:
+  ehospital:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

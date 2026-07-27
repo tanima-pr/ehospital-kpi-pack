@@ -1,0 +1,4 @@
+# Pinned to the stable 1.9 line: installs cleanly from PyPI with no GitHub
+# build-time download (avoids the experimental-parser SSL error on newer versions).
+dbt-core~=1.9.0
+dbt-duckdb~=1.9.0

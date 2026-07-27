@@ -1,0 +1,67 @@
+version: 2
+
+# Descriptions here power `dbt docs`. Tests here run on `dbt test` and fail loudly
+# if the data ever breaks an assumption — the core promise of analytics engineering.
+
+models:
+  - name: stg_patients
+    description: "One clean row per patient, with a single derived insurance_type."
+    columns:
+      - name: patient_id
+        description: "Primary key for a patient."
+        tests: [unique, not_null]
+      - name: insurance_type
+        description: "OHIP, Private, or Unknown — derived once here and reused everywhere."
+        tests:
+          - accepted_values:
+              values: ['OHIP', 'Private', 'Unknown']
+
+  - name: stg_appointments
+    description: "One clean row per appointment, with day and week grains added."
+    columns:
+      - name: appointment_id
+        description: "Primary key for an appointment."
+        tests: [unique, not_null]
+      - name: patient_id
+        description: "Foreign key to stg_patients."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_patients')
+              field: patient_id
+      - name: status
+        description: "Lifecycle status of the appointment."
+        tests:
+          - accepted_values:
+              values: ['Completed', 'Cancelled', 'No-Show', 'Scheduled']
+
+  - name: stg_billing
+    description: "One clean row per bill."
+    columns:
+      - name: billing_id
+        description: "Primary key for a bill."
+        tests: [unique, not_null]
+      - name: patient_id
+        description: "Foreign key to stg_patients."
+        tests:
+          - relationships:
+              to: ref('stg_patients')
+              field: patient_id
+      - name: billing_status
+        description: "Payment status of the bill."
+        tests:
+          - accepted_values:
+              values: ['Paid', 'Pending', 'Denied']
+
+  - name: stg_bloodtests
+    description: "One clean row per blood test performed."
+    columns:
+      - name: bloodtest_id
+        description: "Primary key for a blood test."
+        tests: [unique, not_null]
+      - name: patient_id
+        description: "Foreign key to stg_patients."
+        tests:
+          - relationships:
+              to: ref('stg_patients')
+              field: patient_id
