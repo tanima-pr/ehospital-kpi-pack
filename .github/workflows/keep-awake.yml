@@ -10,28 +10,54 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
       - name: Install Playwright
         run: npm i playwright@1.47.2 && npx playwright install --with-deps chromium
       - name: Visit app and wake it if asleep
         env:
           APP_URL: https://ehospital-kpi-pack-ciun5bgxma6ufbq5revtnf.streamlit.app
         run: |
-          node -e "
+          cat > wake.js <<'JS'
           const { chromium } = require('playwright');
+          const WAKE = /get this app back up/i;
+
+          // Look for the wake-up button on the page and inside any embedded frames.
+          async function findWakeButton(page, ms) {
+            const end = Date.now() + ms;
+            while (Date.now() < end) {
+              for (const f of page.frames()) {
+                const btn = f.getByRole('button', { name: WAKE });
+                if (await btn.count().catch(() => 0)) return btn.first();
+              }
+              await page.waitForTimeout(1000);
+            }
+            return null;
+          }
+
           (async () => {
             const browser = await chromium.launch();
             const page = await browser.newPage();
-            await page.goto(process.env.APP_URL, { timeout: 90000, waitUntil: 'domcontentloaded' });
-            const btn = page.getByRole('button', { name: /get this app back up/i });
-            if (await btn.isVisible({ timeout: 15000 }).catch(() => false)) {
+            await page.goto(process.env.APP_URL, { timeout: 90000, waitUntil: 'load' });
+
+            const btn = await findWakeButton(page, 30000);
+            if (btn) {
               await btn.click();
-              console.log('App was asleep - wake-up clicked');
+              console.log('App was asleep - wake-up clicked, waiting for it to boot...');
+              await page.waitForTimeout(90000);
+              await page.reload({ waitUntil: 'load' });
+              if (await findWakeButton(page, 15000)) {
+                console.error('App is STILL asleep after clicking wake-up.');
+                await browser.close();
+                process.exit(1);
+              }
+              console.log('App is awake now.');
             } else {
               console.log('App already awake');
+              await page.waitForTimeout(30000);
             }
-            await page.waitForTimeout(45000);
             await browser.close();
-          })();"
+          })();
+          JS
+          node wake.js
