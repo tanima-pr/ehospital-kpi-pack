@@ -5,6 +5,17 @@ hospital teams ask questions about operational and billing KPIs in
 plain English and get trusted, SQL-backed answers without needing 
 SQL expertise or engineering support.
 
+**🔗 Live demo:** https://ehospital-kpi-pack-ciun5bgxma6ufbq5revtnf.streamlit.app
+*(If the demo is waking up, give it ~30 seconds. Screenshots below.)*
+
+**Plain-English question → governed SQL → answer**
+
+![Answer with governed SQL](ehospital-answer.jpg)
+
+**Guardrails block unsafe queries**
+
+![Guardrail blocking a DELETE query](ehospital-guardrail.jpg)
+
 ## Business Problem
 
 Hospital operations teams couldn't easily explore performance data 
