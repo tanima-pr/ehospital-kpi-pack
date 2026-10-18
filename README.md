@@ -1,8 +1,9 @@
 # eHospital KPI Pack — AI-Assisted Healthcare Analytics Workspace
 
-A Proof of Concept analytics workspace built to demonstrate how 
-AI-assisted natural-language querying can make hospital operational 
-and billing data accessible without requiring SQL expertise.
+A governed, AI-assisted analytics workspace that lets non-technical 
+hospital teams ask questions about operational and billing KPIs in 
+plain English and get trusted, SQL-backed answers without needing 
+SQL expertise or engineering support.
 
 ## Business Problem
 
