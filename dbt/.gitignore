@@ -16,3 +16,7 @@ __pycache__/
 
 # macOS clutter
 .DS_Store
+
+.env.snowflake
+*.p8
+.user.yml

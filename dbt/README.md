@@ -45,3 +45,30 @@ before bad data reaches a dashboard, and auto-generated documentation with full 
 
 **Tech:** dbt · DuckDB (portable to BigQuery/Snowflake by swapping `profiles.yml`) ·
 staging/marts modeling · dbt tests · dbt docs.
+
+## Migrated to Snowflake
+
+The same dbt models now run on **Snowflake** as well as DuckDB. Only `profiles.yml` changes.
+
+- **Least-privilege RBAC:** dedicated `DBT_ROLE` scoped to one schema, rolled up to `SYSADMIN`
+- **Key-pair authentication:** a service user (`DBT_USER`) with no password; the private key never leaves the laptop
+- **Cost control:** X-Small warehouse that auto-suspends after 60 seconds idle
+- **Secrets stay out of Git:** connection settings come from environment variables (`.env.snowflake`, git-ignored)
+
+```bash
+# one-time: run snowflake/00_setup.sql in Snowsight, then register your public key on DBT_USER
+set -a; source .env.snowflake; set +a
+dbt debug --profiles-dir . --target snowflake    # connection check
+dbt build --profiles-dir . --target snowflake    # 4 seeds, 10 models, 15 tests
+```
+
+### Migration validation
+`snowflake/99_reconciliation.sql` compares every model's row count and total revenue against the DuckDB baseline.
+
+| Check | DuckDB | Snowflake |
+|---|---|---|
+| `dbt build` (seeds, models, tests) | 29 / 29 pass | 29 / 29 pass |
+| Row counts, 10 models | baseline | 10 / 10 match |
+| Total revenue | $328,803.94 | $328,803.94 |
+
+![Snowflake reconciliation: all models MATCH](snowflake/reconciliation.png)
