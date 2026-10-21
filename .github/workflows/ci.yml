@@ -1,0 +1,48 @@
+name: CI
+
+# Runs on every push and pull request to main:
+#   1. pytest  - unit tests for the AI SQL guardrails (no API key needed)
+#   2. dbt     - seed -> run -> test on DuckDB (all models + 15 data tests)
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  guardrail-tests:
+    name: Guardrail unit tests (pytest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ai_assistant
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install test dependencies
+        run: pip install sqlglot pytest
+      - name: Run pytest
+        run: pytest -q
+
+  dbt-build:
+    name: dbt build on DuckDB (models + data tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dbt
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dbt
+        run: pip install "dbt-core~=1.9.0" "dbt-duckdb~=1.9.0"
+      - name: dbt deps / debug
+        run: dbt debug --profiles-dir . --target dev
+      - name: dbt build (seed + run + test)
+        run: dbt build --profiles-dir . --target dev
