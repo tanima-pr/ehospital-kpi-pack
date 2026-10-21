@@ -1,5 +1,7 @@
 # eHospital KPI Pack — AI-Assisted Healthcare Analytics Workspace
 
+[![CI](https://github.com/tanima-pr/ehospital-kpi-pack/actions/workflows/ci.yml/badge.svg)](https://github.com/tanima-pr/ehospital-kpi-pack/actions/workflows/ci.yml)
+
 A governed, AI-assisted analytics workspace that lets non-technical 
 hospital teams ask questions about operational and billing KPIs in 
 plain English and get trusted, SQL-backed answers without needing 
